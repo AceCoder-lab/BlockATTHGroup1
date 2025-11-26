@@ -15,7 +15,7 @@ public class car {
             return this.model_Name;
         }
         return "You can only get 'company' or 'model'";
-    }
+    }                                                               //hi sir Ian
 
     // setter for company and model
     public void setCMname(String company_Name, String model_Name) {
@@ -110,4 +110,5 @@ public class car {
         input.close();
     }
 }
+
 
