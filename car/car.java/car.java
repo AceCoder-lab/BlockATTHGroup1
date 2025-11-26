@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class car extends JFrame {
+public class CarGUI extends JFrame {
 
     private String company_Name = "";
     private String model_Name = "";
@@ -11,18 +11,13 @@ public class car extends JFrame {
     private double mileAge = 0;
 
     // GUI components
-    private JTextField companyField;
-    private JTextField modelField;
-    private JTextField yearField;
-    private JTextField mileageField;
+    private JTextField companyField, modelField, yearField, mileageField;
     private JTextArea outputArea;
-    private JButton processButton;
-    private JButton clearButton;  // Added clear button
+    private JButton processButton, clearButton;
 
-    // Constructor to set up the GUI
-    public car() {
+    public CarGUI() {
         setTitle("Car Information System");
-        setSize(400, 400);
+        setSize(450, 450);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new FlowLayout());
 
@@ -47,110 +42,91 @@ public class car extends JFrame {
         processButton = new JButton("Process and Display");
         add(processButton);
 
-        clearButton = new JButton("Clear");  // Added clear button
+        clearButton = new JButton("Clear");
         add(clearButton);
 
         // Output area
-        outputArea = new JTextArea(10, 30);
+        outputArea = new JTextArea(12, 30);
         outputArea.setEditable(false);
         add(new JScrollPane(outputArea));
 
-        // Action listener for the process button
+        // Button actions
         processButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    // Get inputs
-                    String company = companyField.getText();
-                    String model = modelField.getText();
-                    int year = Integer.parseInt(yearField.getText());
-                    double mileage = Double.parseDouble(mileageField.getText());
-
-                    // Set values
-                    setCMname(company, model);
-                    setYear(year);
-                    setMileAge(mileage);
-
-                    // Display results
-                    outputArea.setText("--- USER INPUT RESULTS ---\n" +
-                                       getCarInfo() +
-                                       "Estimated Resale Value: ₱" +
-                                       String.format("%,.2f", estimateResaleValue()));
-                } catch (NumberFormatException ex) {
-                    outputArea.setText("Error: Please enter valid numbers for year and mileage.");
-                }
+                processCarInfo();
             }
         });
 
-        // Action listener for the clear button
         clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Clear all input fields and output area
-                companyField.setText("");
-                modelField.setText("");
-                yearField.setText("");
-                mileageField.setText("");
-                outputArea.setText("");
+                clearFields();
             }
         });
     }
 
-    // getter for company and model
-    public String getCMname(String name) {
-        if (name.equalsIgnoreCase("company")) {
-            return this.company_Name;
-        } else if (name.equalsIgnoreCase("model")) {
-            return this.model_Name;
+    // Process input and display results
+    private void processCarInfo() {
+        try {
+            company_Name = companyField.getText();
+            model_Name = modelField.getText();
+            year = Integer.parseInt(yearField.getText());
+            mileAge = Double.parseDouble(mileageField.getText());
+
+            outputArea.setText(
+                    "--- USER INPUT RESULTS ---\n" +
+                    getCarInfo() +
+                    "Mileage Category: " + getMileageCategory() + "\n" +
+                    "Car Age: " + getCarAge() + " years\n" +
+                    "Estimated Resale Value: ₱" + String.format("%,.2f", estimateResaleValue())
+            );
+        } catch (NumberFormatException ex) {
+            outputArea.setText("Error: Please enter valid numbers for year and mileage.");
         }
-        return "You can only get 'company' or 'model'";
     }
 
-    // setter for company and model
-    public void setCMname(String company_Name, String model_Name) {
-        this.company_Name = company_Name;
-        this.model_Name = model_Name;
+    // Clear all input/output fields
+    private void clearFields() {
+        companyField.setText("");
+        modelField.setText("");
+        yearField.setText("");
+        mileageField.setText("");
+        outputArea.setText("");
     }
 
-    // getter for year
-    public int getYear() {
-        return this.year;
+    // Car information
+    private String getCarInfo() {
+        return "Car Information:\n" +
+                "Company: " + company_Name +
+                "\nModel: " + model_Name +
+                "\nYear: " + year +
+                "\nMileage: " + mileAge + " km\n";
     }
 
-    // setter for year
-    public void setYear(int year) {
-        this.year = year;
+    // FEATURE 3: Mileage category
+    private String getMileageCategory() {
+        if (mileAge < 20000) return "Low Mileage (Excellent condition)";
+        else if (mileAge < 70000) return "Average Usage";
+        else return "High Mileage (Heavily Used)";
     }
 
-    // getter for mileage
-    public double getMileAge() {
-        return this.mileAge;
+    // FEATURE 4: Car age
+    private int getCarAge() {
+        int currentYear = 2025;
+        return currentYear - year;
     }
 
-    // setter for mileage
-    public void setMileAge(double mileage) {
-        this.mileAge = mileage;
-    }
-
-    // FEATURE 1: Calculate estimated resale value
-    public double estimateResaleValue() {
+    // FEATURE 1: Estimated resale value based on car age
+    private double estimateResaleValue() {
         double baseValue = 500_000;
-        double depreciation = year * 0.05;
+        double age = getCarAge();
+        double depreciation = age * 0.05;
+        if (depreciation > 0.8) depreciation = 0.8; // max 80% depreciation
         return baseValue * (1 - depreciation);
     }
 
-    // FEATURE 2: Display full car info
-    public String getCarInfo() {
-        return "Car Information:\n" +
-               "Company: " + company_Name +
-               "\nModel: " + model_Name +
-               "\nYear: " + year +
-               "\nMileage: " + mileAge + " km\n";
-    }
-
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new car().setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new CarGUI().setVisible(true));
     }
 }
