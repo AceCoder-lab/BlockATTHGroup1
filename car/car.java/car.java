@@ -59,6 +59,23 @@ public class car {
                "\nMileage: " + mileAge + " km\n";
     }
 
+//  FEATURE 3: Mileage Category
+    public String getMileageCategory() {
+        if (mileAge < 20000) {
+            return "Low Mileage (Excellent condition)";
+        } else if (mileAge < 70000) {
+            return "Average Usage";
+        } else {
+            return "High Mileage (Heavily Used)";
+        }
+    }
+
+    //  FEATURE 4: Car Age
+    public int getCarAge() {
+        int currentYear = 2025; 
+        return currentYear - year;
+    }
+
     public static void main(String[] args) {
 
         Scanner input = new Scanner(System.in);
@@ -85,5 +102,11 @@ public class car {
 
         System.out.println("Estimated Resale Value: ₱" +
                 String.format("%,.2f", car.estimateResaleValue()));
+
+        // NEW FEATURE OUTPUTS
+        System.out.println("Mileage Category: " + car.getMileageCategory());
+        System.out.println("Car Age: " + car.getCarAge() + " years old");
+
+        input.close();
     }
 }
